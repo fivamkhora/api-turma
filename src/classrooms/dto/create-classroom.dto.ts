@@ -1,0 +1,15 @@
+import { IsNotEmpty, IsString } from 'class-validator';
+
+export class CreateClassroomDto {
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  schoolYear!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  teacherId!: string;
+}
