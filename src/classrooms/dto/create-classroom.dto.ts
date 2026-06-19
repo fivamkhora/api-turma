@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateClassroomDto {
   @IsString()
@@ -9,7 +9,6 @@ export class CreateClassroomDto {
   @IsNotEmpty()
   schoolYear!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  teacherId!: string;
+  @IsNumber()
+  teacherId!: number;
 }

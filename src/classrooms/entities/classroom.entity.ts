@@ -23,7 +23,7 @@ export class Classroom {
   schoolYear!: string;
 
   @Column()
-  teacherId!: string;
+  teacherId!: number;
 
   @CreateDateColumn()
   createdAt!: Date;
