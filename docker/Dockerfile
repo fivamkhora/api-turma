@@ -3,7 +3,7 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
-
+ 
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
 COPY src ./src
