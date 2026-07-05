@@ -167,6 +167,79 @@ Resposta esperada:
 ]
 ```
 
+### Listar turmas por usuario vinculado
+
+```http
+GET /classrooms/:id/members
+```
+
+Parametros:
+
+- `id`: identificador numerico do usuario (`userId`)
+
+Resposta esperada:
+
+```json
+[
+  {
+    "id": "uuid-da-turma",
+    "name": "Turma 1A",
+    "code": "TURMA-ABC123",
+    "schoolYear": "2026",
+    "teacherId": 1,
+    "createdAt": "2026-07-05T00:00:00.000Z",
+    "updatedAt": "2026-07-05T00:00:00.000Z"
+  }
+]
+```
+
+Se o usuario nao estiver vinculado a nenhuma turma, a resposta sera uma lista vazia:
+
+```json
+[]
+```
+
+### Listar membros de uma turma
+
+```http
+GET /classrooms/:id
+```
+
+Parametros:
+
+- `id`: uuid da turma
+
+Resposta esperada:
+
+```json
+[
+  {
+    "id": "uuid-do-vinculo",
+    "classroomId": "uuid-da-turma",
+    "userId": 10,
+    "role": "Professor",
+    "createdAt": "2026-07-05T00:00:00.000Z"
+  },
+  {
+    "id": "uuid-do-vinculo",
+    "classroomId": "uuid-da-turma",
+    "userId": 25,
+    "role": "Aluno",
+    "createdAt": "2026-07-05T00:00:00.000Z"
+  }
+]
+```
+
+Se a turma existir e nao possuir membros, a resposta sera uma lista vazia:
+
+```json
+[]
+```
+
+Erros possiveis:
+
+- `404 Not Found`: turma nao encontrada
+
 ### Vincular professor a uma turma
 
 ```http
@@ -301,7 +374,7 @@ src/
 - `AppModule`: modulo raiz, carrega variaveis de ambiente e configura conexao com PostgreSQL.
 - `ClassroomsModule`: modulo responsavel pelas rotas e regras de turmas.
 - `ClassroomsController`: expoe os endpoints REST de turmas.
-- `ClassroomsService`: executa criacao, listagem, vinculo de professores/alunos e geracao do codigo da turma.
+- `ClassroomsService`: executa criacao, listagem, consulta por usuario, consulta de membros da turma, vinculo de professores/alunos e geracao do codigo da turma.
 - `Classroom`: entidade TypeORM persistida na tabela `classrooms`.
 - `ClassroomMember`: entidade TypeORM persistida na tabela `classroom_members`.
 

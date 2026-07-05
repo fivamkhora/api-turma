@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 
 import { ClassroomsService } from './classrooms.service';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
@@ -16,6 +16,20 @@ export class ClassroomsController {
   @Get()
   async findAll() {
     return this.classroomsService.findAll();
+  }
+
+  @Get(':id/members')
+  async findClassroomsByUser(
+    @Param('id', ParseIntPipe) userId: number,
+  ) {
+    return this.classroomsService.findByUserId(userId);
+  }
+
+  @Get(':id')
+  async findMembersByClassroom(
+    @Param('id') classroomId: string,
+  ) {
+    return this.classroomsService.findMembersByClassroomId(classroomId);
   }
 
   @Post(':id/teachers')

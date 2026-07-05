@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { Classroom } from './entities/classroom.entity';
 import { ClassroomMember, ClassroomMemberRole } from './entities/classroom-member.entity';
@@ -34,6 +34,44 @@ export class ClassroomsService {
 
   async findAll() {
     return await this.classroomRepository.find();
+  }
+
+  async findByUserId(userId: number) {
+    const members = await this.classroomMemberRepository.find({
+      where: {
+        userId,
+      },
+    });
+
+    const classroomIds = members.map((member) => member.classroomId);
+
+    if (classroomIds.length === 0) {
+      return [];
+    }
+
+    return await this.classroomRepository.find({
+      where: {
+        id: In(classroomIds),
+      },
+    });
+  }
+
+  async findMembersByClassroomId(classroomId: string) {
+    const classroom = await this.classroomRepository.findOne({
+      where: {
+        id: classroomId,
+      },
+    });
+
+    if (!classroom) {
+      throw new NotFoundException('Turma nÃ£o encontrada.');
+    }
+
+    return await this.classroomMemberRepository.find({
+      where: {
+        classroomId,
+      },
+    });
   }
 
   async addTeacher(
