@@ -167,6 +167,86 @@ Resposta esperada:
 ]
 ```
 
+### Vincular professor a uma turma
+
+```http
+POST /classrooms/:id/teachers
+Content-Type: application/json
+```
+
+Parametros:
+
+- `id`: uuid da turma
+
+Body:
+
+```json
+{
+  "userId": 10
+}
+```
+
+Validacoes:
+
+- `userId`: obrigatorio, number
+
+Resposta esperada:
+
+```json
+{
+  "id": "uuid-do-vinculo",
+  "classroomId": "uuid-da-turma",
+  "userId": 10,
+  "role": "Professor",
+  "createdAt": "2026-07-05T00:00:00.000Z"
+}
+```
+
+Erros possiveis:
+
+- `404 Not Found`: turma nao encontrada
+- `409 Conflict`: usuario ja vinculado a esta turma
+
+### Vincular aluno a uma turma
+
+```http
+POST /classrooms/:id/students
+Content-Type: application/json
+```
+
+Parametros:
+
+- `id`: uuid da turma
+
+Body:
+
+```json
+{
+  "userId": 25
+}
+```
+
+Validacoes:
+
+- `userId`: obrigatorio, number
+
+Resposta esperada:
+
+```json
+{
+  "id": "uuid-do-vinculo",
+  "classroomId": "uuid-da-turma",
+  "userId": 25,
+  "role": "Aluno",
+  "createdAt": "2026-07-05T00:00:00.000Z"
+}
+```
+
+Erros possiveis:
+
+- `404 Not Found`: turma nao encontrada
+- `409 Conflict`: usuario ja vinculado a esta turma
+
 ## Modelo de dados
 
 ### Classroom
@@ -181,6 +261,21 @@ Resposta esperada:
 | `createdAt` | Date | Data de criacao |
 | `updatedAt` | Date | Data da ultima atualizacao |
 
+### ClassroomMember
+
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `id` | uuid | Identificador unico do vinculo |
+| `classroomId` | string | Identificador da turma |
+| `userId` | number | Identificador do usuario vinculado |
+| `role` | `Professor` ou `Aluno` | Papel do usuario dentro da turma |
+| `createdAt` | Date | Data de criacao do vinculo |
+
+Restricoes:
+
+- A combinacao `classroomId` + `userId` deve ser unica.
+- O mesmo usuario nao pode ser vinculado duas vezes a mesma turma.
+
 ## Estrutura do sistema
 
 ```text
@@ -194,8 +289,10 @@ src/
     classrooms.module.ts
     classrooms.service.ts
     dto/
+      add-classroom-member.dto.ts
       create-classroom.dto.ts
     entities/
+      classroom-member.entity.ts
       classroom.entity.ts
 ```
 
@@ -204,8 +301,9 @@ src/
 - `AppModule`: modulo raiz, carrega variaveis de ambiente e configura conexao com PostgreSQL.
 - `ClassroomsModule`: modulo responsavel pelas rotas e regras de turmas.
 - `ClassroomsController`: expoe os endpoints REST de turmas.
-- `ClassroomsService`: executa criacao, listagem e geracao do codigo da turma.
+- `ClassroomsService`: executa criacao, listagem, vinculo de professores/alunos e geracao do codigo da turma.
 - `Classroom`: entidade TypeORM persistida na tabela `classrooms`.
+- `ClassroomMember`: entidade TypeORM persistida na tabela `classroom_members`.
 
 ## CI/CD
 
