@@ -51,6 +51,33 @@ describe('ClassroomsService', () => {
     expect(service).toBeDefined();
   });
 
+  it('should find a classroom by id', async () => {
+    const classroom = {
+      id: 'classroom-id',
+      name: 'Turma 1A',
+      code: 'TURMA-ABC123',
+      schoolYear: '2026',
+      teacherId: 10,
+    };
+
+    classroomRepository.findOne.mockResolvedValue(classroom);
+
+    await expect(service.findOne('classroom-id')).resolves.toEqual(classroom);
+    expect(classroomRepository.findOne).toHaveBeenCalledWith({
+      where: {
+        id: 'classroom-id',
+      },
+    });
+  });
+
+  it('should reject when finding an unknown classroom', async () => {
+    classroomRepository.findOne.mockResolvedValue(null);
+
+    await expect(service.findOne('unknown-classroom')).rejects.toThrow(
+      'Turma nao encontrada.',
+    );
+  });
+
   it('should remove a teacher from a classroom', async () => {
     const member = {
       id: 'member-id',

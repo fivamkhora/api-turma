@@ -59,7 +59,7 @@ export class ClassroomsService {
     });
   }
 
-  async findMembersByClassroomId(classroomId: string) {
+  async findOne(classroomId: string) {
     const classroom = await this.classroomRepository.findOne({
       where: {
         id: classroomId,
@@ -67,14 +67,10 @@ export class ClassroomsService {
     });
 
     if (!classroom) {
-      throw new NotFoundException('Turma nÃ£o encontrada.');
+      throw new NotFoundException('Turma nao encontrada.');
     }
 
-    return await this.classroomMemberRepository.find({
-      where: {
-        classroomId,
-      },
-    });
+    return classroom;
   }
 
   async addTeacher(

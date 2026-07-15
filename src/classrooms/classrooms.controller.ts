@@ -36,10 +36,8 @@ export class ClassroomsController {
   }
 
   @Get(':id')
-  async findMembersByClassroom(
-    @Param('id') classroomId: string,
-  ) {
-    return this.classroomsService.findMembersByClassroomId(classroomId);
+  async findOne(@Param('id') classroomId: string) {
+    return this.classroomsService.findOne(classroomId);
   }
 
   @Post(':id/teachers')

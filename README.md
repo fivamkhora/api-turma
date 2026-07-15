@@ -199,7 +199,7 @@ Se o usuario nao estiver vinculado a nenhuma turma, a resposta sera uma lista va
 []
 ```
 
-### Listar membros de uma turma
+### Buscar turma por ID
 
 ```http
 GET /classrooms/:id
@@ -212,28 +212,15 @@ Parametros:
 Resposta esperada:
 
 ```json
-[
-  {
-    "id": "uuid-do-vinculo",
-    "classroomId": "uuid-da-turma",
-    "userId": 10,
-    "role": "Professor",
-    "createdAt": "2026-07-05T00:00:00.000Z"
-  },
-  {
-    "id": "uuid-do-vinculo",
-    "classroomId": "uuid-da-turma",
-    "userId": 25,
-    "role": "Aluno",
-    "createdAt": "2026-07-05T00:00:00.000Z"
-  }
-]
-```
-
-Se a turma existir e nao possuir membros, a resposta sera uma lista vazia:
-
-```json
-[]
+{
+  "id": "uuid-da-turma",
+  "name": "Turma 1A",
+  "code": "TURMA-ABC123",
+  "schoolYear": "2026",
+  "teacherId": 10,
+  "createdAt": "2026-07-05T00:00:00.000Z",
+  "updatedAt": "2026-07-05T00:00:00.000Z"
+}
 ```
 
 Erros possiveis:
@@ -426,7 +413,7 @@ src/
 - `AppModule`: modulo raiz, carrega variaveis de ambiente e configura conexao com PostgreSQL.
 - `ClassroomsModule`: modulo responsavel pelas rotas e regras de turmas.
 - `ClassroomsController`: expoe os endpoints REST de turmas.
-- `ClassroomsService`: executa criacao, listagem, consulta por usuario, consulta de membros da turma, vinculo e remocao de professores/alunos e geracao do codigo da turma.
+- `ClassroomsService`: executa criacao, listagem, busca individual, consulta por usuario, vinculo e remocao de professores/alunos e geracao do codigo da turma.
 - `Classroom`: entidade TypeORM persistida na tabela `classrooms`.
 - `ClassroomMember`: entidade TypeORM persistida na tabela `classroom_members`.
 
