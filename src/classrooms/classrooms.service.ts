@@ -7,7 +7,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
 import { Classroom } from './entities/classroom.entity';
-import { ClassroomMember, ClassroomMemberRole } from './entities/classroom-member.entity';
+import {
+  ClassroomMember,
+  ClassroomMemberRole,
+} from './entities/classroom-member.entity';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { AddClassroomMemberDto } from './dto/add-classroom-member.dto';
 
@@ -96,6 +99,28 @@ export class ClassroomsService {
     );
   }
 
+  async removeTeacher(
+    classroomId: string,
+    removeClassroomMemberDto: AddClassroomMemberDto,
+  ) {
+    await this.removeMember(
+      classroomId,
+      removeClassroomMemberDto.userId,
+      'Professor',
+    );
+  }
+
+  async removeStudent(
+    classroomId: string,
+    removeClassroomMemberDto: AddClassroomMemberDto,
+  ) {
+    await this.removeMember(
+      classroomId,
+      removeClassroomMemberDto.userId,
+      'Aluno',
+    );
+  }
+
   private async addMember(
     classroomId: string,
     userId: number,
@@ -129,6 +154,38 @@ export class ClassroomsService {
     });
 
     return await this.classroomMemberRepository.save(member);
+  }
+
+  private async removeMember(
+    classroomId: string,
+    userId: number,
+    role: ClassroomMemberRole,
+  ) {
+    const classroom = await this.classroomRepository.findOne({
+      where: {
+        id: classroomId,
+      },
+    });
+
+    if (!classroom) {
+      throw new NotFoundException('Turma nao encontrada.');
+    }
+
+    const member = await this.classroomMemberRepository.findOne({
+      where: {
+        classroomId,
+        userId,
+        role,
+      },
+    });
+
+    if (!member) {
+      throw new NotFoundException(
+        `${role} nao encontrado nesta turma.`,
+      );
+    }
+
+    await this.classroomMemberRepository.remove(member);
   }
 
   private generateClassroomCode(): string {

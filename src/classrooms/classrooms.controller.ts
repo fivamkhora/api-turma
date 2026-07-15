@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 
 import { ClassroomsService } from './classrooms.service';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
@@ -43,6 +53,18 @@ export class ClassroomsController {
     );
   }
 
+  @Delete(':id/teachers')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeTeacher(
+    @Param('id') classroomId: string,
+    @Body() removeClassroomMemberDto: AddClassroomMemberDto,
+  ) {
+    await this.classroomsService.removeTeacher(
+      classroomId,
+      removeClassroomMemberDto,
+    );
+  }
+
   @Post(':id/students')
   async addStudent(
     @Param('id') classroomId: string,
@@ -51,6 +73,18 @@ export class ClassroomsController {
     return this.classroomsService.addStudent(
       classroomId,
       addClassroomMemberDto,
+    );
+  }
+
+  @Delete(':id/students')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeStudent(
+    @Param('id') classroomId: string,
+    @Body() removeClassroomMemberDto: AddClassroomMemberDto,
+  ) {
+    await this.classroomsService.removeStudent(
+      classroomId,
+      removeClassroomMemberDto,
     );
   }
 }

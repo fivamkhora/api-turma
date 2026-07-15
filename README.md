@@ -280,6 +280,32 @@ Erros possiveis:
 - `404 Not Found`: turma nao encontrada
 - `409 Conflict`: usuario ja vinculado a esta turma
 
+### Remover professor de uma turma
+
+```http
+DELETE /classrooms/:id/teachers
+Content-Type: application/json
+```
+
+Parametros:
+
+- `id`: uuid da turma
+
+Body:
+
+```json
+{
+  "userId": 10
+}
+```
+
+Em caso de sucesso, a API responde com `204 No Content`.
+
+Erros possiveis:
+
+- `404 Not Found`: turma nao encontrada
+- `404 Not Found`: professor nao encontrado na turma
+
 ### Vincular aluno a uma turma
 
 ```http
@@ -319,6 +345,32 @@ Erros possiveis:
 
 - `404 Not Found`: turma nao encontrada
 - `409 Conflict`: usuario ja vinculado a esta turma
+
+### Remover aluno de uma turma
+
+```http
+DELETE /classrooms/:id/students
+Content-Type: application/json
+```
+
+Parametros:
+
+- `id`: uuid da turma
+
+Body:
+
+```json
+{
+  "userId": 25
+}
+```
+
+Em caso de sucesso, a API responde com `204 No Content`.
+
+Erros possiveis:
+
+- `404 Not Found`: turma nao encontrada
+- `404 Not Found`: aluno nao encontrado na turma
 
 ## Modelo de dados
 
@@ -374,7 +426,7 @@ src/
 - `AppModule`: modulo raiz, carrega variaveis de ambiente e configura conexao com PostgreSQL.
 - `ClassroomsModule`: modulo responsavel pelas rotas e regras de turmas.
 - `ClassroomsController`: expoe os endpoints REST de turmas.
-- `ClassroomsService`: executa criacao, listagem, consulta por usuario, consulta de membros da turma, vinculo de professores/alunos e geracao do codigo da turma.
+- `ClassroomsService`: executa criacao, listagem, consulta por usuario, consulta de membros da turma, vinculo e remocao de professores/alunos e geracao do codigo da turma.
 - `Classroom`: entidade TypeORM persistida na tabela `classrooms`.
 - `ClassroomMember`: entidade TypeORM persistida na tabela `classroom_members`.
 

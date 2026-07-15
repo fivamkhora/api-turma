@@ -18,6 +18,8 @@ describe('ClassroomsController', () => {
             findMembersByClassroomId: jest.fn(),
             addTeacher: jest.fn(),
             addStudent: jest.fn(),
+            removeTeacher: jest.fn(),
+            removeStudent: jest.fn(),
           },
         },
       ],

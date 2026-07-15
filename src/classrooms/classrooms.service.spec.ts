@@ -6,6 +6,13 @@ import { Classroom } from './entities/classroom.entity';
 
 describe('ClassroomsService', () => {
   let service: ClassroomsService;
+  let classroomRepository: {
+    findOne: jest.Mock;
+  };
+  let classroomMemberRepository: {
+    findOne: jest.Mock;
+    remove: jest.Mock;
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,15 +34,88 @@ describe('ClassroomsService', () => {
             save: jest.fn(),
             find: jest.fn(),
             findOne: jest.fn(),
+            remove: jest.fn(),
           },
         },
       ],
     }).compile();
 
     service = module.get<ClassroomsService>(ClassroomsService);
+    classroomRepository = module.get(getRepositoryToken(Classroom));
+    classroomMemberRepository = module.get(
+      getRepositoryToken(ClassroomMember),
+    );
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('should remove a teacher from a classroom', async () => {
+    const member = {
+      id: 'member-id',
+      classroomId: 'classroom-id',
+      userId: 10,
+      role: 'Professor',
+    };
+
+    classroomRepository.findOne.mockResolvedValue({ id: 'classroom-id' });
+    classroomMemberRepository.findOne.mockResolvedValue(member);
+
+    await service.removeTeacher('classroom-id', { userId: 10 });
+
+    expect(classroomMemberRepository.findOne).toHaveBeenCalledWith({
+      where: {
+        classroomId: 'classroom-id',
+        userId: 10,
+        role: 'Professor',
+      },
+    });
+    expect(classroomMemberRepository.remove).toHaveBeenCalledWith(member);
+  });
+
+  it('should remove a student from a classroom', async () => {
+    const member = {
+      id: 'member-id',
+      classroomId: 'classroom-id',
+      userId: 25,
+      role: 'Aluno',
+    };
+
+    classroomRepository.findOne.mockResolvedValue({ id: 'classroom-id' });
+    classroomMemberRepository.findOne.mockResolvedValue(member);
+
+    await service.removeStudent('classroom-id', { userId: 25 });
+
+    expect(classroomMemberRepository.findOne).toHaveBeenCalledWith({
+      where: {
+        classroomId: 'classroom-id',
+        userId: 25,
+        role: 'Aluno',
+      },
+    });
+    expect(classroomMemberRepository.remove).toHaveBeenCalledWith(member);
+  });
+
+  it('should reject removal when the classroom does not exist', async () => {
+    classroomRepository.findOne.mockResolvedValue(null);
+
+    await expect(
+      service.removeTeacher('unknown-classroom', { userId: 10 }),
+    ).rejects.toThrow('Turma nao encontrada.');
+
+    expect(classroomMemberRepository.findOne).not.toHaveBeenCalled();
+    expect(classroomMemberRepository.remove).not.toHaveBeenCalled();
+  });
+
+  it('should reject removal when the member does not exist', async () => {
+    classroomRepository.findOne.mockResolvedValue({ id: 'classroom-id' });
+    classroomMemberRepository.findOne.mockResolvedValue(null);
+
+    await expect(
+      service.removeStudent('classroom-id', { userId: 25 }),
+    ).rejects.toThrow('Aluno nao encontrado nesta turma.');
+
+    expect(classroomMemberRepository.remove).not.toHaveBeenCalled();
   });
 });
