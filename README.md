@@ -118,8 +118,7 @@ Body:
 ```json
 {
   "name": "Turma 1A",
-  "schoolYear": "2026",
-  "teacherId": 1
+  "schoolYear": "2026"
 }
 ```
 
@@ -127,7 +126,16 @@ Validacoes:
 
 - `name`: obrigatorio, string
 - `schoolYear`: obrigatorio, string
-- `teacherId`: obrigatorio, number
+
+O professor pode ser vinculado depois pela rota `POST /classrooms/:id/teachers`.
+
+Para atualizar um banco existente, execute o script:
+
+```bash
+psql -h "$DATABASE_HOST" -p "$DATABASE_PORT" -U "$DATABASE_USER" -d "$DATABASE_NAME" -f database/migrations/20260715_remove_classroom_teacher_id.sql
+```
+
+O script remove a coluna `teacherId` da tabela `classrooms`. Professores sao vinculados pela tabela `classroom_members` usando a rota `POST /classrooms/:id/teachers`.
 
 Resposta esperada:
 
@@ -137,7 +145,6 @@ Resposta esperada:
   "name": "Turma 1A",
   "code": "TURMA-ABC123",
   "schoolYear": "2026",
-  "teacherId": 1,
   "createdAt": "2026-06-28T00:00:00.000Z",
   "updatedAt": "2026-06-28T00:00:00.000Z"
 }
@@ -160,7 +167,6 @@ Resposta esperada:
     "name": "Turma 1A",
     "code": "TURMA-ABC123",
     "schoolYear": "2026",
-    "teacherId": 1,
     "createdAt": "2026-06-28T00:00:00.000Z",
     "updatedAt": "2026-06-28T00:00:00.000Z"
   }
@@ -186,7 +192,6 @@ Resposta esperada:
     "name": "Turma 1A",
     "code": "TURMA-ABC123",
     "schoolYear": "2026",
-    "teacherId": 1,
     "createdAt": "2026-07-05T00:00:00.000Z",
     "updatedAt": "2026-07-05T00:00:00.000Z"
   }
@@ -217,7 +222,6 @@ Resposta esperada:
   "name": "Turma 1A",
   "code": "TURMA-ABC123",
   "schoolYear": "2026",
-  "teacherId": 10,
   "createdAt": "2026-07-05T00:00:00.000Z",
   "updatedAt": "2026-07-05T00:00:00.000Z"
 }
@@ -406,7 +410,6 @@ Erros possiveis:
 | `name` | string | Nome da turma |
 | `code` | string | Codigo unico gerado automaticamente |
 | `schoolYear` | string | Ano letivo |
-| `teacherId` | number | Identificador do professor responsavel |
 | `createdAt` | Date | Data de criacao |
 | `updatedAt` | Date | Data da ultima atualizacao |
 

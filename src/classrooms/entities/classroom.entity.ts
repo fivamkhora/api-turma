@@ -22,9 +22,6 @@ export class Classroom {
   @Column()
   schoolYear!: string;
 
-  @Column()
-  teacherId!: number;
-
   @CreateDateColumn()
   createdAt!: Date;
 

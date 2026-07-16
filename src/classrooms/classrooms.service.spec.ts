@@ -7,6 +7,8 @@ import { Classroom } from './entities/classroom.entity';
 describe('ClassroomsService', () => {
   let service: ClassroomsService;
   let classroomRepository: {
+    create: jest.Mock;
+    save: jest.Mock;
     findOne: jest.Mock;
   };
   let classroomMemberRepository: {
@@ -52,13 +54,30 @@ describe('ClassroomsService', () => {
     expect(service).toBeDefined();
   });
 
+  it('should create a classroom without a teacher', async () => {
+    const createClassroomDto = {
+      name: 'Turma 1A',
+      schoolYear: '2026',
+    };
+
+    classroomRepository.create.mockImplementation((classroom) => classroom);
+    classroomRepository.save.mockImplementation((classroom) => classroom);
+
+    const classroom = await service.create(createClassroomDto);
+
+    expect(classroomRepository.create).toHaveBeenCalledWith({
+      ...createClassroomDto,
+      code: expect.stringMatching(/^TURMA-[A-Z0-9]{6}$/),
+    });
+    expect(classroom).not.toHaveProperty('teacherId');
+  });
+
   it('should find a classroom by id', async () => {
     const classroom = {
       id: 'classroom-id',
       name: 'Turma 1A',
       code: 'TURMA-ABC123',
       schoolYear: '2026',
-      teacherId: 10,
     };
 
     classroomRepository.findOne.mockResolvedValue(classroom);
