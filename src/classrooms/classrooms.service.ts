@@ -73,6 +73,16 @@ export class ClassroomsService {
     return classroom;
   }
 
+  async findMembersByClassroomId(classroomId: string) {
+    await this.findOne(classroomId);
+
+    return await this.classroomMemberRepository.find({
+      where: {
+        classroomId,
+      },
+    });
+  }
+
   async addTeacher(
     classroomId: string,
     addClassroomMemberDto: AddClassroomMemberDto,

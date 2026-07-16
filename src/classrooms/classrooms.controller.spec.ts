@@ -16,6 +16,7 @@ describe('ClassroomsController', () => {
             findAll: jest.fn(),
             findByUserId: jest.fn(),
             findOne: jest.fn(),
+            findMembersByClassroomId: jest.fn(),
             addTeacher: jest.fn(),
             addStudent: jest.fn(),
             removeTeacher: jest.fn(),

@@ -10,6 +10,7 @@ describe('ClassroomsService', () => {
     findOne: jest.Mock;
   };
   let classroomMemberRepository: {
+    find: jest.Mock;
     findOne: jest.Mock;
     remove: jest.Mock;
   };
@@ -76,6 +77,53 @@ describe('ClassroomsService', () => {
     await expect(service.findOne('unknown-classroom')).rejects.toThrow(
       'Turma nao encontrada.',
     );
+  });
+
+  it('should list all members from a classroom', async () => {
+    const members = [
+      {
+        id: 'teacher-member-id',
+        classroomId: 'classroom-id',
+        userId: 10,
+        role: 'Professor',
+      },
+      {
+        id: 'student-member-id',
+        classroomId: 'classroom-id',
+        userId: 25,
+        role: 'Aluno',
+      },
+    ];
+
+    classroomRepository.findOne.mockResolvedValue({ id: 'classroom-id' });
+    classroomMemberRepository.find.mockResolvedValue(members);
+
+    await expect(
+      service.findMembersByClassroomId('classroom-id'),
+    ).resolves.toEqual(members);
+    expect(classroomMemberRepository.find).toHaveBeenCalledWith({
+      where: {
+        classroomId: 'classroom-id',
+      },
+    });
+  });
+
+  it('should return no members for an empty classroom', async () => {
+    classroomRepository.findOne.mockResolvedValue({ id: 'classroom-id' });
+    classroomMemberRepository.find.mockResolvedValue([]);
+
+    await expect(
+      service.findMembersByClassroomId('classroom-id'),
+    ).resolves.toEqual([]);
+  });
+
+  it('should reject listing members from an unknown classroom', async () => {
+    classroomRepository.findOne.mockResolvedValue(null);
+
+    await expect(
+      service.findMembersByClassroomId('unknown-classroom'),
+    ).rejects.toThrow('Turma nao encontrada.');
+    expect(classroomMemberRepository.find).not.toHaveBeenCalled();
   });
 
   it('should remove a teacher from a classroom', async () => {

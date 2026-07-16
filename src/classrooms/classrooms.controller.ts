@@ -35,6 +35,11 @@ export class ClassroomsController {
     return this.classroomsService.findByUserId(userId);
   }
 
+  @Get(':id/classrooms')
+  async findMembersByClassroom(@Param('id') classroomId: string) {
+    return this.classroomsService.findMembersByClassroomId(classroomId);
+  }
+
   @Get(':id')
   async findOne(@Param('id') classroomId: string) {
     return this.classroomsService.findOne(classroomId);
