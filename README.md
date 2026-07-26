@@ -9,6 +9,7 @@ Backend do projeto Khora/FIVAM para gerenciamento de turmas, desenvolvido com Ne
 - TypeScript
 - PostgreSQL
 - TypeORM
+- Swagger/OpenAPI
 - Jest
 - Docker
 
@@ -91,6 +92,23 @@ Em desenvolvimento local:
 ```text
 http://localhost:3000
 ```
+
+## Swagger
+
+Com a aplicacao em execucao, acesse a documentacao interativa:
+
+```text
+http://localhost:3000/docs/
+```
+
+Na interface, expanda uma rota, selecione `Try it out`, preencha os parametros ou o body e use `Execute` para enviar a requisicao.
+
+A especificacao OpenAPI tambem esta disponivel nos formatos:
+
+- JSON: `http://localhost:3000/docs/openapi.json`
+- YAML: `http://localhost:3000/docs/openapi.yaml`
+
+Cada operacao documenta parametros, exemplos de body, respostas de sucesso e erros esperados.
 
 ## Rotas da API
 
